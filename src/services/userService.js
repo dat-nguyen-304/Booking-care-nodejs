@@ -9,7 +9,8 @@ let handleLogin = (email, password) => {
             let isExist = await checkUserEmail(email);
             if (isExist) {
                 let user = await db.User.findOne({
-                    where: { email: email }
+                    where: { email: email },
+                    raw: true
                 });
                 if (user) {
                     let check = bcrypt.compareSync(password, user.password);
@@ -104,8 +105,9 @@ let createUser = (data) => {
                 lastName: data.lastName,
                 address: data.address,
                 phoneNumber: data.phoneNumber,
-                gender: data.gender === '1' ? true : false,
+                gender: data.gender,
                 roleId: data.roleId,
+                positionId: data.positionId,
             })
             resolve({
                 errCode: 0,
@@ -190,11 +192,29 @@ let updateUser = (data) => {
     })
 }
 
+let getAllCode = (type) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let res = {};
+            let allCode = await db.Allcode.findAll({
+                where: { type: type },
+                raw: true
+            });
+            res.errCode = 0;
+            res.allCode = allCode;
+            resolve(res);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     handleLogin: handleLogin,
     getAllUsers: getAllUsers,
     createUser: createUser,
     deleteUser: deleteUser,
-    updateUser: updateUser
+    updateUser: updateUser,
+    getAllCode: getAllCode
 
 }
