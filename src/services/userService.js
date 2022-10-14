@@ -94,25 +94,27 @@ let createUser = (data) => {
             if (check) {
                 resolve({
                     errCode: 1,
-                    errMessge: 'Email is already in used!'
+                    errMessage: 'Email is already in used!'
                 })
+            } else {
+                let hashPasswordFromBcrypt = await hashUserPassword(data.password);
+                await db.User.create({
+                    email: data.email,
+                    password: hashPasswordFromBcrypt,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    address: data.address,
+                    phoneNumber: data.phoneNumber,
+                    gender: data.gender,
+                    roleId: data.roleId,
+                    positionId: data.positionId,
+                    image: data.avatar
+                })
+                resolve({
+                    errCode: 0,
+                    errMessage: 'OK'
+                });
             }
-            let hashPasswordFromBcrypt = await hashUserPassword(data.password);
-            await db.User.create({
-                email: data.email,
-                password: hashPasswordFromBcrypt,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                address: data.address,
-                phoneNumber: data.phoneNumber,
-                gender: data.gender,
-                roleId: data.roleId,
-                positionId: data.positionId,
-            })
-            resolve({
-                errCode: 0,
-                errMessge: 'OK'
-            });
         } catch (e) {
             reject(e);
         }
@@ -160,20 +162,26 @@ let deleteUser = (userId) => {
 let updateUser = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!data.id) {
+            if (!data.email) {
                 resolve({
                     errCode: 2,
                     errMessage: 'Missing parameter'
                 })
             }
             let user = await db.User.findOne({
-                where: { id: data.id },
+                where: { email: data.email },
                 raw: false
             })
             if (user) {
                 user.firstName = data.firstName;
                 user.lastName = data.lastName;
                 user.address = data.address;
+                user.gender = data.gender;
+                user.positionId = data.positionId;
+                user.roleId = data.roleId;
+                if (data.avatar) {
+                    user.image = data.avatar;
+                }
                 await user.save();
                 resolve({
                     errCode: 0,
