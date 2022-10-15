@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     class MarkDown extends Model {
 
         static associate (models) {
+            MarkDown.belongsTo(models.User, { foreignKey: 'doctorId' })
         }
     };
     MarkDown.init({

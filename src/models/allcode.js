@@ -6,8 +6,10 @@ module.exports = (sequelize, DataTypes) => {
     class Allcode extends Model {
 
         static associate (models) {
-            Allcode.hasMany(models.User, { foreignKey: 'positionId', as: 'positionData' })
-            Allcode.hasMany(models.User, { foreignKey: 'gender', as: 'genderData' })
+            Allcode.hasMany(models.User, { foreignKey: 'positionId' })
+            Allcode.hasMany(models.User, { foreignKey: 'gender' })
+            // Allcode.hasMany(models.User, { foreignKey: 'positionId', as: 'positionData' })
+            // Allcode.hasMany(models.User, { foreignKey: 'gender', as: 'genderData' })
         }
     };
     Allcode.init({

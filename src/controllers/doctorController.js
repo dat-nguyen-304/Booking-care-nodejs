@@ -43,8 +43,22 @@ let createMarkDown = async (req, res) => {
     }
 }
 
+let getDetailDoctorById = async (req, res) => {
+    try {
+        let doctorInfo = await doctorService.getDetailDoctorById(req.query.id);
+        return res.status(200).json(doctorInfo);
+    } catch (e) {
+        console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from the server'
+        })
+    }
+}
+
 module.exports = {
     getTopDoctorHome,
     getAllDoctors,
-    createMarkDown
+    createMarkDown,
+    getDetailDoctorById
 }   

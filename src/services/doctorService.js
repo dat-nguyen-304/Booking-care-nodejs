@@ -17,6 +17,13 @@ let getTopDoctorHome = (limit) => {
                 raw: true,
                 nest: true,
             })
+            if (users && users.length > 0)
+                users = users.map(user => {
+                    return {
+                        ...user,
+                        image: user.image ? Buffer.from(user.image, 'base64').toString('binary') : null
+                    }
+                })
             resolve({
                 errCode: 0,
                 topDoctors: users
@@ -40,7 +47,7 @@ let getAllDoctors = (limit) => {
             })
             resolve({
                 errCode: 0,
-                allDoctors: users
+                allDoctors: users,
             })
         } catch (e) {
             reject(e);
@@ -68,6 +75,44 @@ let createMarkDown = (data) => {
     })
 }
 
+let getDetailDoctorById = (doctorId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let doctorInfo = await db.User.findOne({
+                where: {
+                    id: doctorId
+                },
+                attributes: {
+                    exclude: ['password']
+                },
+                include: [
+                    {
+                        model: db.MarkDown,
+                        attributes: ['description', 'contentHTML', 'contentMarkDown']
+                    },
+                    {
+                        model: db.Allcode, as: 'positionData',
+                        attributes: ['valueEn', 'valueVi']
+                    },
+                ],
+
+                raw: true,
+                nest: true
+            })
+            resolve({
+                errCode: 0,
+                doctorInfo: {
+                    ...doctorInfo,
+                    image: doctorInfo.image ? Buffer.from(doctorInfo.image, 'base64').toString('binary') : null
+                }
+            })
+
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
-    getTopDoctorHome, getAllDoctors, createMarkDown
+    getTopDoctorHome, getAllDoctors, createMarkDown, getDetailDoctorById
 }
