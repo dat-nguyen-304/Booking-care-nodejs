@@ -1,4 +1,5 @@
 import db from '../models/index';
+import _ from 'lodash';
 
 let getTopDoctorHome = (limit) => {
     return new Promise(async (resolve, reject) => {
@@ -75,6 +76,29 @@ let createMarkDown = (data) => {
     })
 }
 
+let updateMarkDown = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let markdown = await db.MarkDown.findOne({
+                where: { doctorId: data.doctorId },
+                raw: false,
+            })
+            markdown.contentHTML = data.contentHTML;
+            markdown.contentMarkDown = data.contentMarkDown;
+            markdown.description = data.description;
+
+            markdown.save();
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            });
+
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 let getDetailDoctorById = (doctorId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -113,6 +137,48 @@ let getDetailDoctorById = (doctorId) => {
     })
 }
 
+let createBulkSchedules = (schedules) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // console.log('schedules: ', schedules);
+            let existing = await db.Schedule.findAll({
+                where: {
+                    doctorId: schedules[0].doctorId,
+                    date: schedules[0].date
+                },
+                raw: true
+            })
+            console.log('--- schedules: ', schedules);
+            if (existing && existing.length > 0) {
+                existing = existing.map(element => {
+                    return {
+                        ...element,
+                        date: new Date(element.date).getTime()
+                    }
+                })
+                console.log('----after existing: ', existing);
+
+                schedules = _.differenceWith(schedules, existing, (a, b) => {
+                    return a.timeType === b.timeType && a.date === b.date;
+                })
+                console.log('----after schedules: ', schedules);
+            }
+            console.log('----outer schedules: ', schedules);
+
+            await db.Schedule.bulkCreate(schedules);
+            resolve({
+                errCode: 0,
+                errMessage: 'OK',
+            })
+        } catch (e) {
+            reject({
+                errCode: 1,
+                errMessage: 'error from server'
+            });
+        }
+    })
+}
+
 module.exports = {
-    getTopDoctorHome, getAllDoctors, createMarkDown, getDetailDoctorById
+    getTopDoctorHome, getAllDoctors, createMarkDown, updateMarkDown, getDetailDoctorById, createBulkSchedules
 }

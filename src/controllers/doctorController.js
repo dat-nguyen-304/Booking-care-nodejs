@@ -32,8 +32,20 @@ let getAllDoctors = async (req, res) => {
 let createMarkDown = async (req, res) => {
     try {
         let message = await doctorService.createMarkDown(req.body);
-        console.log(message);
         return res.status(200).json(message);
+    } catch (e) {
+        console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            message: 'Error from server...'
+        })
+    }
+}
+
+let updateMarkDown = async (req, res) => {
+    try {
+        let response = await doctorService.updateMarkDown(req.body);
+        return res.status(200).json(response);
     } catch (e) {
         console.log(e);
         return res.status(200).json({
@@ -56,9 +68,24 @@ let getDetailDoctorById = async (req, res) => {
     }
 }
 
+let createBulkSchedules = async (req, res) => {
+    try {
+        let response = await doctorService.createBulkSchedules(req.body.schedules);
+        return res.status(200).json(response);
+    } catch (e) {
+        console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from the server'
+        })
+    }
+}
+
 module.exports = {
     getTopDoctorHome,
     getAllDoctors,
     createMarkDown,
-    getDetailDoctorById
+    updateMarkDown,
+    getDetailDoctorById,
+    createBulkSchedules
 }   
