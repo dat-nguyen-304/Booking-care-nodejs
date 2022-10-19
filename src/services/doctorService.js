@@ -148,7 +148,6 @@ let createBulkSchedules = (schedules) => {
                 },
                 raw: true
             })
-            console.log('--- schedules: ', schedules);
             if (existing && existing.length > 0) {
                 existing = existing.map(element => {
                     return {
@@ -156,14 +155,11 @@ let createBulkSchedules = (schedules) => {
                         date: new Date(element.date).getTime()
                     }
                 })
-                console.log('----after existing: ', existing);
 
                 schedules = _.differenceWith(schedules, existing, (a, b) => {
                     return a.timeType === b.timeType && a.date === b.date;
                 })
-                console.log('----after schedules: ', schedules);
             }
-            console.log('----outer schedules: ', schedules);
 
             await db.Schedule.bulkCreate(schedules);
             resolve({
@@ -179,6 +175,30 @@ let createBulkSchedules = (schedules) => {
     })
 }
 
+let getSchedules = async (doctorId, date) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            date = new Date(date * 1);
+            let allSchedules = await db.Schedule.findAll({
+                where: { doctorId, date },
+                attributes: ['timeType'],
+                include: [
+                    { model: db.Allcode, as: 'timeData', attributes: ['valueEn', 'valueVi'] },
+                ],
+            })
+            resolve({
+                errCode: 0,
+                allSchedules
+            })
+        } catch (e) {
+            reject({
+                errCode: 1,
+                errMessage: 'error from server'
+            });
+        }
+    })
+}
+
 module.exports = {
-    getTopDoctorHome, getAllDoctors, createMarkDown, updateMarkDown, getDetailDoctorById, createBulkSchedules
+    getTopDoctorHome, getAllDoctors, createMarkDown, updateMarkDown, getDetailDoctorById, createBulkSchedules, getSchedules
 }

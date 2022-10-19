@@ -81,11 +81,24 @@ let createBulkSchedules = async (req, res) => {
     }
 }
 
+let getSchedules = async (req, res) => {
+    try {
+        let response = await doctorService.getSchedules(req.query.id, req.query.date);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from the server'
+        })
+    }
+}
+
 module.exports = {
     getTopDoctorHome,
     getAllDoctors,
     createMarkDown,
     updateMarkDown,
     getDetailDoctorById,
-    createBulkSchedules
+    createBulkSchedules,
+    getSchedules
 }   
