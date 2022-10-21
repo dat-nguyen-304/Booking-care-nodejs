@@ -76,6 +76,29 @@ let createMarkDown = (data) => {
     })
 }
 
+let createDoctorInfo = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await db.Doctor_Info.create({
+                doctorId: data.doctorId,
+                priceId: data.priceId,
+                provinceId: data.provinceId,
+                paymentId: data.paymentId,
+                nameClinic: data.nameClinic,
+                addressClinic: data.addressClinic,
+                note: data.note,
+            })
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            });
+
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 let updateMarkDown = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -93,6 +116,55 @@ let updateMarkDown = (data) => {
                 errMessage: 'OK'
             });
 
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let updateDoctorInfo = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let doctorInfo = await db.Doctor_Info.findOne({
+                where: { doctorId: data.doctorId },
+                raw: false,
+            })
+
+            doctorInfo.priceId = data.priceId;
+            doctorInfo.provinceId = data.provinceId;
+            doctorInfo.paymentId = data.paymentId;
+            doctorInfo.nameClinic = data.nameClinic;
+            doctorInfo.addressClinic = data.addressClinic;
+            doctorInfo.note = data.note;
+            doctorInfo.save();
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            });
+
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let getDoctorInfo = (doctorId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let doctorInfo = await db.Doctor_Info.findOne({
+                where: { doctorId: doctorId },
+                include: [
+                    { model: db.Allcode, as: 'priceData', attributes: ['valueEn', 'valueVi'] },
+                    { model: db.Allcode, as: 'provinceData', attributes: ['valueEn', 'valueVi'] },
+                    { model: db.Allcode, as: 'paymentData', attributes: ['valueEn', 'valueVi'] }
+                ],
+                raw: true,
+                nest: true
+            })
+            resolve({
+                errCode: 0,
+                doctorInfo: doctorInfo
+            })
         } catch (e) {
             reject(e);
         }
@@ -118,6 +190,17 @@ let getDetailDoctorById = (doctorId) => {
                         model: db.Allcode, as: 'positionData',
                         attributes: ['valueEn', 'valueVi']
                     },
+                    {
+                        model: db.Doctor_Info,
+                        attributes: {
+                            exclude: ['id', 'doctorId']
+                        },
+                        include: [
+                            { model: db.Allcode, as: 'priceData', attributes: ['valueEn', 'valueVi'] },
+                            { model: db.Allcode, as: 'provinceData', attributes: ['valueEn', 'valueVi'] },
+                            { model: db.Allcode, as: 'paymentData', attributes: ['valueEn', 'valueVi'] }
+                        ]
+                    }
                 ],
 
                 raw: true,
@@ -200,5 +283,6 @@ let getSchedules = async (doctorId, date) => {
 }
 
 module.exports = {
-    getTopDoctorHome, getAllDoctors, createMarkDown, updateMarkDown, getDetailDoctorById, createBulkSchedules, getSchedules
+    getTopDoctorHome, getAllDoctors, createMarkDown, updateMarkDown, getDetailDoctorById, createBulkSchedules, getSchedules,
+    createDoctorInfo, updateDoctorInfo, getDoctorInfo
 }

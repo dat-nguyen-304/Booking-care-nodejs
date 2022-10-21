@@ -42,12 +42,48 @@ let createMarkDown = async (req, res) => {
     }
 }
 
+let createDoctorInfo = async (req, res) => {
+    try {
+        let message = await doctorService.createDoctorInfo(req.body);
+        return res.status(200).json(message);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            message: 'Error from server...'
+        })
+    }
+}
+
 let updateMarkDown = async (req, res) => {
     try {
         let response = await doctorService.updateMarkDown(req.body);
         return res.status(200).json(response);
     } catch (e) {
         console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            message: 'Error from server...'
+        })
+    }
+}
+
+let updateDoctorInfo = async (req, res) => {
+    try {
+        let response = await doctorService.updateDoctorInfo(req.body);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            message: 'Error from server...'
+        })
+    }
+}
+
+let getDoctorInfo = async (req, res) => {
+    try {
+        let response = await doctorService.getDoctorInfo(req.query.doctorId);
+        return res.status(200).json(response);
+    } catch (e) {
         return res.status(200).json({
             errCode: -1,
             message: 'Error from server...'
@@ -93,12 +129,16 @@ let getSchedules = async (req, res) => {
     }
 }
 
+
 module.exports = {
     getTopDoctorHome,
     getAllDoctors,
     createMarkDown,
+    createDoctorInfo,
     updateMarkDown,
+    updateDoctorInfo,
     getDetailDoctorById,
     createBulkSchedules,
-    getSchedules
+    getSchedules,
+    getDoctorInfo
 }   
