@@ -1,9 +1,8 @@
 import db from "../models/index";
 import CRUDService from "../services/CRUDService"
-let getHomePage = async(req, res) => {
+let getHomePage = async (req, res) => {
     try {
         let data = await db.User.findAll();
-
         return res.render('homepage.ejs', {
             data: JSON.stringify(data)
         });
@@ -13,17 +12,16 @@ let getHomePage = async(req, res) => {
 
 }
 
-let getCrud = async(req, res) => {
+let getCrud = async (req, res) => {
     return res.render('crud.ejs');
 }
 
-let postCrud = async(req, res) => {
+let postCrud = async (req, res) => {
     let message = await CRUDService.createNewUser(req.body);
-    console.log(message);
     return res.send('post crud from server');
 }
 
-let displayGetCrud = async(req, res) => {
+let displayGetCrud = async (req, res) => {
     let data = await CRUDService.getAllUser();
     console.log(data);
     return res.render('usertable.ejs', {
@@ -31,7 +29,7 @@ let displayGetCrud = async(req, res) => {
     });
 }
 
-let getEditCrud = async(req, res) => {
+let getEditCrud = async (req, res) => {
     let userId = req.query.id;
     if (userId) {
         let userData = await CRUDService.getUserInfoById(userId);
@@ -43,7 +41,7 @@ let getEditCrud = async(req, res) => {
     }
 }
 
-let putCrud = async(req, res) => {
+let putCrud = async (req, res) => {
     let data = req.body;
     let allUsers = await CRUDService.updateUserData(data);
     return res.render('usertable.ejs', {
@@ -51,7 +49,7 @@ let putCrud = async(req, res) => {
     });
 }
 
-let deleteCrud = async(req, res) => {
+let deleteCrud = async (req, res) => {
     let userId = req.query.id;
     let allUsers = await CRUDService.deleteUserById(userId);
     return res.render('usertable.ejs', {
@@ -60,11 +58,11 @@ let deleteCrud = async(req, res) => {
 }
 
 module.exports = {
-    getHomePage: getHomePage,
-    getCrud: getCrud,
-    postCrud: postCrud,
-    displayGetCrud: displayGetCrud,
-    getEditCrud: getEditCrud,
-    putCrud: putCrud,
-    deleteCrud: deleteCrud,
+    getHomePage,
+    getCrud,
+    postCrud,
+    displayGetCrud,
+    getEditCrud,
+    putCrud,
+    deleteCrud
 }

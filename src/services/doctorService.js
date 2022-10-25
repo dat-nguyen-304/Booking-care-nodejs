@@ -282,7 +282,54 @@ let getSchedules = async (doctorId, date) => {
     })
 }
 
+let createSpecialty = async (specialty) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await db.Specialty.create({
+                name: specialty.name,
+                image: specialty.avatar,
+                contentHTML: specialty.contentHTML,
+                contentMarkDown: specialty.contentMarkDown,
+            })
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            });
+
+        } catch (e) {
+            console.log('catch e: ', e);
+            reject(e);
+        }
+    })
+}
+
+let getAllSpecialty = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let allSpecialty = await db.Specialty.findAll({
+                raw: true,
+            });
+            if (allSpecialty && allSpecialty.length > 0)
+                allSpecialty = allSpecialty.map(specialty => {
+                    return {
+                        ...specialty,
+                        image: specialty.image ? Buffer.from(specialty.image, 'base64').toString('binary') : null
+                    }
+                })
+            resolve({
+                errCode: 0,
+                errMessage: 'OK',
+                allSpecialty,
+            });
+
+        } catch (e) {
+            console.log('catch e: ', e);
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     getTopDoctorHome, getAllDoctors, createMarkDown, updateMarkDown, getDetailDoctorById, createBulkSchedules, getSchedules,
-    createDoctorInfo, updateDoctorInfo, getDoctorInfo
+    createDoctorInfo, updateDoctorInfo, getDoctorInfo, createSpecialty, getAllSpecialty
 }

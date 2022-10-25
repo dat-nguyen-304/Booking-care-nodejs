@@ -96,7 +96,6 @@ let getDetailDoctorById = async (req, res) => {
         let doctorInfo = await doctorService.getDetailDoctorById(req.query.id);
         return res.status(200).json(doctorInfo);
     } catch (e) {
-        console.log(e);
         return res.status(200).json({
             errCode: -1,
             errMessage: 'Error from the server'
@@ -109,7 +108,6 @@ let createBulkSchedules = async (req, res) => {
         let response = await doctorService.createBulkSchedules(req.body.schedules);
         return res.status(200).json(response);
     } catch (e) {
-        console.log(e);
         return res.status(200).json({
             errCode: -1,
             errMessage: 'Error from the server'
@@ -129,6 +127,29 @@ let getSchedules = async (req, res) => {
     }
 }
 
+let createSpecialty = async (req, res) => {
+    try {
+        let response = await doctorService.createSpecialty(req.body);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from the server'
+        })
+    }
+}
+
+let getAllSpecialty = async (req, res) => {
+    try {
+        let response = await doctorService.getAllSpecialty();
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from the server'
+        })
+    }
+}
 
 module.exports = {
     getTopDoctorHome,
@@ -140,5 +161,7 @@ module.exports = {
     getDetailDoctorById,
     createBulkSchedules,
     getSchedules,
-    getDoctorInfo
+    getDoctorInfo,
+    createSpecialty,
+    getAllSpecialty
 }   
