@@ -151,6 +151,30 @@ let getAllSpecialty = async (req, res) => {
     }
 }
 
+let getSpecialtyById = async (req, res) => {
+    try {
+        let response = await doctorService.getSpecialtyById(req.query.id);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from the server'
+        })
+    }
+}
+
+let getAllDoctorsOfSpecialty = async (req, res) => {
+    try {
+        let response = await doctorService.getAllDoctorsOfSpecialty(req.query.id);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from the server'
+        })
+    }
+}
+
 module.exports = {
     getTopDoctorHome,
     getAllDoctors,
@@ -163,5 +187,7 @@ module.exports = {
     getSchedules,
     getDoctorInfo,
     createSpecialty,
-    getAllSpecialty
+    getAllSpecialty,
+    getSpecialtyById,
+    getAllDoctorsOfSpecialty
 }   

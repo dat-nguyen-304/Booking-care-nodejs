@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             Doctor_Info.belongsTo(models.Allcode, { foreignKey: 'priceId', targetKey: 'keyMap', as: 'priceData' });
             Doctor_Info.belongsTo(models.Allcode, { foreignKey: 'provinceId', targetKey: 'keyMap', as: 'provinceData' });
             Doctor_Info.belongsTo(models.Allcode, { foreignKey: 'paymentId', targetKey: 'keyMap', as: 'paymentData' });
-
+            Doctor_Info.belongsTo(models.Specialty, { foreignKey: 'specialtyId', targetKey: 'id', as: 'specialtyData' });
         }
     };
     Doctor_Info.init({
@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         addressClinic: DataTypes.STRING,
         note: DataTypes.STRING,
         count: DataTypes.INTEGER,
+        specialtyId: DataTypes.INTEGER,
     }, {
         sequelize,
         modelName: 'Doctor_Info',

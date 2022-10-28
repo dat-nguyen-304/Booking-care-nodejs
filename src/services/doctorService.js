@@ -87,6 +87,7 @@ let createDoctorInfo = (data) => {
                 nameClinic: data.nameClinic,
                 addressClinic: data.addressClinic,
                 note: data.note,
+                specialtyId: data.specialtyId
             })
             resolve({
                 errCode: 0,
@@ -136,6 +137,7 @@ let updateDoctorInfo = (data) => {
             doctorInfo.nameClinic = data.nameClinic;
             doctorInfo.addressClinic = data.addressClinic;
             doctorInfo.note = data.note;
+            doctorInfo.specialtyId = data.specialtyId;
             doctorInfo.save();
             resolve({
                 errCode: 0,
@@ -198,7 +200,8 @@ let getDetailDoctorById = (doctorId) => {
                         include: [
                             { model: db.Allcode, as: 'priceData', attributes: ['valueEn', 'valueVi'] },
                             { model: db.Allcode, as: 'provinceData', attributes: ['valueEn', 'valueVi'] },
-                            { model: db.Allcode, as: 'paymentData', attributes: ['valueEn', 'valueVi'] }
+                            { model: db.Allcode, as: 'paymentData', attributes: ['valueEn', 'valueVi'] },
+                            { model: db.Specialty, as: 'specialtyData', attributes: ['name'] }
                         ]
                     }
                 ],
@@ -223,7 +226,6 @@ let getDetailDoctorById = (doctorId) => {
 let createBulkSchedules = (schedules) => {
     return new Promise(async (resolve, reject) => {
         try {
-            // console.log('schedules: ', schedules);
             let existing = await db.Schedule.findAll({
                 where: {
                     doctorId: schedules[0].doctorId,
@@ -329,7 +331,64 @@ let getAllSpecialty = () => {
     })
 }
 
+let getSpecialtyById = (specialtyId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let specialty = {};
+            specialty = await db.Specialty.findOne({
+                where: { id: specialtyId },
+                attributes: ['contentHTML', 'image'],
+                raw: true,
+            })
+            if (!_.isEmpty(specialty)) {
+                specialty = {
+                    ...specialty,
+                    image: specialty.image ? Buffer.from(specialty.image, 'base64').toString('binary') : null,
+                }
+                resolve({
+                    errCode: 0,
+                    errMessage: "Get specialty success",
+                    specialty
+                });
+            }
+            else reject({
+                errCode: 1,
+                errMessage: "Not found specialty"
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let getAllDoctorsOfSpecialty = (specialtyId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let doctorIds = [];
+            doctorIds = await db.Doctor_Info.findAll({
+                where: { specialtyId },
+                attributes: ['doctorId'],
+                raw: true,
+            })
+            if (doctorIds && doctorIds.length > 0) {
+                doctorIds = doctorIds.map((doctorId) => doctorId.doctorId);
+                resolve({
+                    errCode: 0,
+                    errMessage: "Get all doctor Ids success",
+                    doctorIds
+                });
+            }
+            else reject({
+                errCode: 1,
+                errMessage: "Not found any doctor"
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     getTopDoctorHome, getAllDoctors, createMarkDown, updateMarkDown, getDetailDoctorById, createBulkSchedules, getSchedules,
-    createDoctorInfo, updateDoctorInfo, getDoctorInfo, createSpecialty, getAllSpecialty
+    createDoctorInfo, updateDoctorInfo, getDoctorInfo, createSpecialty, getAllSpecialty, getSpecialtyById, getAllDoctorsOfSpecialty
 }
