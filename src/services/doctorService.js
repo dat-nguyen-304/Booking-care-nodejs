@@ -13,7 +13,14 @@ let getTopDoctorHome = (limit) => {
                 },
                 include: [
                     { model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi'] },
-                    { model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi'] }
+                    { model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi'] },
+                    {
+                        model: db.Doctor_Info,
+                        attributes: [],
+                        include: [
+                            { model: db.Specialty, as: 'specialtyData', attributes: ['name'] }
+                        ]
+                    }
                 ],
                 raw: true,
                 nest: true,
@@ -226,25 +233,30 @@ let getDetailDoctorById = (doctorId) => {
 let createBulkSchedules = (schedules) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let existing = await db.Schedule.findAll({
+            await db.Schedule.bulkCreate(schedules);
+            resolve({
+                errCode: 0,
+                errMessage: 'OK',
+            })
+        } catch (e) {
+            reject({
+                errCode: 1,
+                errMessage: 'error from server'
+            });
+        }
+    })
+}
+
+let updateBulkSchedules = (schedules) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await db.Schedule.destroy({
                 where: {
                     doctorId: schedules[0].doctorId,
                     date: schedules[0].date
                 },
                 raw: true
             })
-            if (existing && existing.length > 0) {
-                existing = existing.map(element => {
-                    return {
-                        ...element,
-                        date: new Date(element.date).getTime()
-                    }
-                })
-
-                schedules = _.differenceWith(schedules, existing, (a, b) => {
-                    return a.timeType === b.timeType && a.date === b.date;
-                })
-            }
 
             await db.Schedule.bulkCreate(schedules);
             resolve({
@@ -259,6 +271,7 @@ let createBulkSchedules = (schedules) => {
         }
     })
 }
+
 
 let getSchedules = async (doctorId, date) => {
     return new Promise(async (resolve, reject) => {
@@ -388,7 +401,77 @@ let getAllDoctorsOfSpecialty = (specialtyId) => {
     })
 }
 
+let getBooking = ({ doctorId, date }) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let bookings = [];
+            bookings = await db.Booking.findAll({
+                where: { doctorId: doctorId, date: +date },
+                include: [
+                    { model: db.Allcode, as: 'statusData', attributes: ['valueEn', 'valueVi'] },
+                    { model: db.Allcode, as: 'timeData', attributes: ['valueEn', 'valueVi'] }
+                ],
+                raw: true,
+                nest: true,
+            })
+            resolve({
+                errCode: 0,
+                errMessage: 'ok',
+                bookings
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let changeBookingStatus = ({ doctorId, date, statusId }) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let booking = await db.Booking.findOne({
+                where: { doctorId: doctorId, date: +date },
+                raw: false,
+            })
+            if (booking) {
+                booking.statusId = statusId;
+                await booking.save();
+            }
+            booking = await db.Booking.findOne({
+                where: { doctorId: doctorId, date: +date },
+                include: [
+                    { model: db.Allcode, as: 'statusData', attributes: ['valueEn', 'valueVi'] },
+                    { model: db.Allcode, as: 'timeData', attributes: ['valueEn', 'valueVi'] }
+                ],
+                raw: true,
+                nest: true,
+            })
+            resolve({
+                errCode: 0,
+                errMessage: 'ok',
+                booking
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
-    getTopDoctorHome, getAllDoctors, createMarkDown, updateMarkDown, getDetailDoctorById, createBulkSchedules, getSchedules,
-    createDoctorInfo, updateDoctorInfo, getDoctorInfo, createSpecialty, getAllSpecialty, getSpecialtyById, getAllDoctorsOfSpecialty
+    getTopDoctorHome,
+    getAllDoctors,
+    createMarkDown,
+    updateMarkDown,
+    getDetailDoctorById,
+    createBulkSchedules,
+    updateBulkSchedules,
+    getSchedules,
+    createDoctorInfo,
+    updateDoctorInfo,
+    getDoctorInfo,
+    createSpecialty,
+    getAllSpecialty,
+    getSpecialtyById,
+    getAllDoctorsOfSpecialty,
+    getBooking,
+    changeBookingStatus
 }

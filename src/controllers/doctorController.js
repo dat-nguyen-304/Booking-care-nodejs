@@ -1,5 +1,6 @@
 import db from "../models/index";
 import doctorService from "../services/doctorService";
+import emailService from "../services/emailService";
 
 let getTopDoctorHome = async (req, res) => {
     let limit = req.query && req.query.limit;
@@ -115,6 +116,18 @@ let createBulkSchedules = async (req, res) => {
     }
 }
 
+let updateBulkSchedules = async (req, res) => {
+    try {
+        let response = await doctorService.updateBulkSchedules(req.body.schedules);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from the server'
+        })
+    }
+}
+
 let getSchedules = async (req, res) => {
     try {
         let response = await doctorService.getSchedules(req.query.id, req.query.date);
@@ -175,6 +188,42 @@ let getAllDoctorsOfSpecialty = async (req, res) => {
     }
 }
 
+let getBooking = async (req, res) => {
+    try {
+        let response = await doctorService.getBooking(req.query);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from the server'
+        })
+    }
+}
+
+let changeBookingStatus = async (req, res) => {
+    try {
+        let response = await doctorService.changeBookingStatus(req.body);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from the server'
+        })
+    }
+}
+
+let sendInvoiceViaEmail = async (req, res) => {
+    try {
+        let response = await emailService.sendInvoice(req.body);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from the server'
+        })
+    }
+}
+
 module.exports = {
     getTopDoctorHome,
     getAllDoctors,
@@ -184,10 +233,14 @@ module.exports = {
     updateDoctorInfo,
     getDetailDoctorById,
     createBulkSchedules,
+    updateBulkSchedules,
     getSchedules,
     getDoctorInfo,
     createSpecialty,
     getAllSpecialty,
     getSpecialtyById,
-    getAllDoctorsOfSpecialty
+    getAllDoctorsOfSpecialty,
+    getBooking,
+    changeBookingStatus,
+    sendInvoiceViaEmail
 }   

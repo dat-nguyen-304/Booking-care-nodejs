@@ -20,6 +20,7 @@ let createBooking = (data) => {
                 time: data.dateAndTime,
                 doctorName: data.doctorFullName,
                 redirectLink: createConfirmLink(token, data.doctorId),
+                language: data.language
             })
             const [user, created] = await db.Booking.findOrCreate({
                 where: {
