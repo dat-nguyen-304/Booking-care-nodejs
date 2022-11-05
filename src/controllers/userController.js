@@ -49,7 +49,6 @@ let handleEditUser = async (req, res) => {
 }
 
 let handleDeleteUser = async (req, res) => {
-    console.log('req delete from controller: ', req.body);
     if (!req.body.id) {
         return res.status(500).json({
             errCode: 1,

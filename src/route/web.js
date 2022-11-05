@@ -1,7 +1,7 @@
 import express from "express";
 import homeController from "../controllers/homeController";
 import userController from "../controllers/userController";
-import doctorController from "../controllers/doctorController";
+import adminController from "../controllers/adminController";
 import patientController from "../controllers/patientController";
 
 let router = express.Router();
@@ -20,30 +20,30 @@ let initWebRoutes = (app) => {
     router.put('/api/edit-user', userController.handleEditUser);
     router.get('/api/all-code', userController.getAllCode);
 
-    router.get('/api/top-doctor-home', doctorController.getTopDoctorHome);
-    router.get('/api/get-all-doctor', doctorController.getAllDoctors);
-    router.post('/api/create-markdown', doctorController.createMarkDown);
-    router.post('/api/create-doctor-info', doctorController.createDoctorInfo);
-    router.put('/api/update-markdown', doctorController.updateMarkDown);
-    router.put('/api/update-doctor-info', doctorController.updateDoctorInfo);
-    router.get('/api/get-doctor-info', doctorController.getDoctorInfo);
+    router.get('/api/top-doctor-home', adminController.getTopDoctorHome);
+    router.get('/api/get-all-doctor', adminController.getAllDoctors);
+    router.post('/api/create-markdown', adminController.createMarkDown);
+    router.post('/api/create-doctor-info', adminController.createDoctorInfo);
+    router.put('/api/update-markdown', adminController.updateMarkDown);
+    router.put('/api/update-doctor-info', adminController.updateDoctorInfo);
+    router.get('/api/get-doctor-info', adminController.getDoctorInfo);
 
-    router.get('/api/get-detail-doctor-by-id', doctorController.getDetailDoctorById);
-    router.post('/api/create-bulk-schedules', doctorController.createBulkSchedules);
-    router.put('/api/update-bulk-schedules', doctorController.updateBulkSchedules);
-    router.get('/api/get-schedules', doctorController.getSchedules);
+    router.get('/api/get-detail-doctor-by-id', adminController.getDetailDoctorById);
+    router.post('/api/create-bulk-schedules', adminController.createBulkSchedules);
+    router.put('/api/update-bulk-schedules', adminController.updateBulkSchedules);
+    router.get('/api/get-schedules', adminController.getSchedules);
 
     router.post('/api/create-booking', patientController.createBooking);
     router.post('/api/verify-booking', patientController.verifyBooking);
 
-    router.post('/api/create-specialty', doctorController.createSpecialty);
-    router.put('/api/update-specialty', doctorController.updateSpecialty);
-    router.get('/api/get-all-specialty', doctorController.getAllSpecialty);
-    router.get('/api/get-specialty', doctorController.getSpecialtyById);
-    router.get('/api/get-all-doctors-of-specialty', doctorController.getAllDoctorsOfSpecialty);
-    router.get('/api/get-booking', doctorController.getBooking);
-    router.put('/api/update-booking-status', doctorController.changeBookingStatus);
-    router.post('/api/send-invoice-via-email', doctorController.sendInvoiceViaEmail);
+    router.post('/api/create-specialty', adminController.createSpecialty);
+    router.put('/api/update-specialty', adminController.updateSpecialty);
+    router.get('/api/get-all-specialty', adminController.getAllSpecialty);
+    router.get('/api/get-specialty', adminController.getSpecialtyById);
+    router.get('/api/get-all-doctors-of-specialty', adminController.getAllDoctorsOfSpecialty);
+    router.get('/api/get-booking', adminController.getBooking);
+    router.put('/api/update-booking-status', adminController.changeBookingStatus);
+    router.post('/api/send-invoice-via-email', adminController.sendInvoiceViaEmail);
     return app.use("/", router);
 }
 

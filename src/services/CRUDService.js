@@ -63,7 +63,6 @@ let updateUserData = (data) => {
                 user.firstName = data.firstName;
                 user.lastName = data.lastName;
                 user.address = data.address;
-                console.log(user);
                 await user.save();
                 let allUsers = await db.User.findAll();
                 resolve(allUsers)
@@ -92,7 +91,6 @@ let deleteUserById = (userId) => {
             }
         } catch (e) {
             reject(e);
-            console.log(e);
         }
     })
 }

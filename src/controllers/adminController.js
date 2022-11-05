@@ -1,12 +1,12 @@
 import db from "../models/index";
-import doctorService from "../services/doctorService";
+import adminService from "../services/adminService";
 import emailService from "../services/emailService";
 
 let getTopDoctorHome = async (req, res) => {
     let limit = req.query && req.query.limit;
     if (!limit) limit = 10;
     try {
-        let response = await doctorService.getTopDoctorHome(+limit);
+        let response = await adminService.getTopDoctorHome(+limit);
         return res.status(200).json(response);
     } catch (e) {
         console.log(e);
@@ -19,7 +19,7 @@ let getTopDoctorHome = async (req, res) => {
 
 let getAllDoctors = async (req, res) => {
     try {
-        let response = await doctorService.getAllDoctors();
+        let response = await adminService.getAllDoctors();
         return res.status(200).json(response);
     } catch (e) {
         console.log(e);
@@ -32,7 +32,7 @@ let getAllDoctors = async (req, res) => {
 
 let createMarkDown = async (req, res) => {
     try {
-        let message = await doctorService.createMarkDown(req.body);
+        let message = await adminService.createMarkDown(req.body);
         return res.status(200).json(message);
     } catch (e) {
         console.log(e);
@@ -45,7 +45,7 @@ let createMarkDown = async (req, res) => {
 
 let createDoctorInfo = async (req, res) => {
     try {
-        let message = await doctorService.createDoctorInfo(req.body);
+        let message = await adminService.createDoctorInfo(req.body);
         return res.status(200).json(message);
     } catch (e) {
         return res.status(200).json({
@@ -57,7 +57,7 @@ let createDoctorInfo = async (req, res) => {
 
 let updateMarkDown = async (req, res) => {
     try {
-        let response = await doctorService.updateMarkDown(req.body);
+        let response = await adminService.updateMarkDown(req.body);
         return res.status(200).json(response);
     } catch (e) {
         console.log(e);
@@ -70,7 +70,7 @@ let updateMarkDown = async (req, res) => {
 
 let updateDoctorInfo = async (req, res) => {
     try {
-        let response = await doctorService.updateDoctorInfo(req.body);
+        let response = await adminService.updateDoctorInfo(req.body);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(200).json({
@@ -82,7 +82,7 @@ let updateDoctorInfo = async (req, res) => {
 
 let getDoctorInfo = async (req, res) => {
     try {
-        let response = await doctorService.getDoctorInfo(req.query.doctorId);
+        let response = await adminService.getDoctorInfo(req.query.doctorId);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(200).json({
@@ -94,7 +94,7 @@ let getDoctorInfo = async (req, res) => {
 
 let getDetailDoctorById = async (req, res) => {
     try {
-        let doctorInfo = await doctorService.getDetailDoctorById(req.query.id);
+        let doctorInfo = await adminService.getDetailDoctorById(req.query.id);
         return res.status(200).json(doctorInfo);
     } catch (e) {
         return res.status(200).json({
@@ -106,7 +106,7 @@ let getDetailDoctorById = async (req, res) => {
 
 let createBulkSchedules = async (req, res) => {
     try {
-        let response = await doctorService.createBulkSchedules(req.body.schedules);
+        let response = await adminService.createBulkSchedules(req.body.schedules);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(200).json({
@@ -118,7 +118,7 @@ let createBulkSchedules = async (req, res) => {
 
 let updateBulkSchedules = async (req, res) => {
     try {
-        let response = await doctorService.updateBulkSchedules(req.body.schedules);
+        let response = await adminService.updateBulkSchedules(req.body.schedules);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(200).json({
@@ -130,7 +130,7 @@ let updateBulkSchedules = async (req, res) => {
 
 let getSchedules = async (req, res) => {
     try {
-        let response = await doctorService.getSchedules(req.query.id, req.query.date);
+        let response = await adminService.getSchedules(req.query.id, req.query.date);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(200).json({
@@ -142,7 +142,7 @@ let getSchedules = async (req, res) => {
 
 let createSpecialty = async (req, res) => {
     try {
-        let response = await doctorService.createSpecialty(req.body);
+        let response = await adminService.createSpecialty(req.body);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(200).json({
@@ -154,7 +154,7 @@ let createSpecialty = async (req, res) => {
 
 let updateSpecialty = async (req, res) => {
     try {
-        let response = await doctorService.updateSpecialty(req.body);
+        let response = await adminService.updateSpecialty(req.body);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(200).json({
@@ -166,7 +166,7 @@ let updateSpecialty = async (req, res) => {
 
 let getAllSpecialty = async (req, res) => {
     try {
-        let response = await doctorService.getAllSpecialty();
+        let response = await adminService.getAllSpecialty();
         return res.status(200).json(response);
     } catch (e) {
         return res.status(200).json({
@@ -178,7 +178,7 @@ let getAllSpecialty = async (req, res) => {
 
 let getSpecialtyById = async (req, res) => {
     try {
-        let response = await doctorService.getSpecialtyById(req.query.id);
+        let response = await adminService.getSpecialtyById(req.query.id);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(200).json({
@@ -190,7 +190,7 @@ let getSpecialtyById = async (req, res) => {
 
 let getAllDoctorsOfSpecialty = async (req, res) => {
     try {
-        let response = await doctorService.getAllDoctorsOfSpecialty(req.query.id);
+        let response = await adminService.getAllDoctorsOfSpecialty(req.query.id);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(200).json({
@@ -202,7 +202,7 @@ let getAllDoctorsOfSpecialty = async (req, res) => {
 
 let getBooking = async (req, res) => {
     try {
-        let response = await doctorService.getBooking(req.query);
+        let response = await adminService.getBooking(req.query);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(200).json({
@@ -214,7 +214,7 @@ let getBooking = async (req, res) => {
 
 let changeBookingStatus = async (req, res) => {
     try {
-        let response = await doctorService.changeBookingStatus(req.body);
+        let response = await adminService.changeBookingStatus(req.body);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(200).json({

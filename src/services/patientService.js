@@ -13,15 +13,6 @@ let createBooking = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let token = uuidv4(); // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
-
-            await emailService.sendSimpleEmail({
-                receiverEmail: data.patientEmail,
-                patientName: data.patientFullName,
-                time: data.dateAndTime,
-                doctorName: data.doctorFullName,
-                redirectLink: createConfirmLink(token, data.doctorId),
-                language: data.language
-            })
             const [user, created] = await db.Booking.findOrCreate({
                 where: {
                     doctorId: data.doctorId,
@@ -37,11 +28,20 @@ let createBooking = (data) => {
                     token
                 }
             })
-            if (created)
+            if (created) {
+                await emailService.sendSimpleEmail({
+                    receiverEmail: data.patientEmail,
+                    patientName: data.patientFullName,
+                    time: data.dateAndTime,
+                    doctorName: data.doctorFullName,
+                    redirectLink: createConfirmLink(token, data.doctorId),
+                    language: data.language
+                })
                 resolve({
                     errCode: 0,
                     errMessage: 'OK'
                 });
+            }
             else resolve({
                 errCode: 1,
                 errMessage: 'Sorry, today, you booked!'

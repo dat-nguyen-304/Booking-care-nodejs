@@ -139,7 +139,6 @@ let deleteUser = (userId) => {
                 where: { id: userId },
                 raw: false
             })
-            console.log(user);
             if (user) {
                 user.destroy();
                 resolve({

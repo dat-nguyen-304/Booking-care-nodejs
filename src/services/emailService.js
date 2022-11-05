@@ -16,10 +16,10 @@ let sendSimpleEmail = async (dataSend) => {
         from: '"Booking care 👻" <khongmottacdung@gmail.com>', // sender address
         to: dataSend.receiverEmail, // list of receivers
         subject: "Booking care ✔", // Subject line
-        html: getHtml(dataSend.language)
+        html: getBookingInformationHtml(dataSend.language)
     });
 
-    function getHtml (language) {
+    function getBookingInformationHtml (language) {
         if (language === 'en')
             return (
                 `
@@ -49,7 +49,7 @@ let sendSimpleEmail = async (dataSend) => {
     }
 }
 
-let sendInvoice = async ({ userEmail, patientFullName, invoiceImg }) => {
+let sendInvoice = async ({ userEmail, patientFullName, invoiceImg, language }) => {
     let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 587,
@@ -71,15 +71,25 @@ let sendInvoice = async ({ userEmail, patientFullName, invoiceImg }) => {
                 encoding: 'base64'
             }
         ],
-        html: `
+        html: getSendInvoiceHtml(language)
+    });
+
+    function getSendInvoiceHtml (language) {
+        if (language === 'vi')
+            return (
+                `
             <h3>Xin chào ${patientFullName}!</h3>
             <p>Booking care gửi bạn thông tin hóa đơn khám bệnh.</p>
             <div>Xin chân thành cảm ơn.</div>
-        `, // html body
-    });
-
-    let getHtml = (language) => {
-
+            `
+            )
+        else return (
+            `
+            <h3>Hello ${patientFullName}!</h3>
+            <p>Booking send you medical bill information.</p>
+            <div>Thank you.</div>
+            `
+        )
     }
 }
 
