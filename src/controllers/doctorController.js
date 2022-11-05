@@ -152,6 +152,18 @@ let createSpecialty = async (req, res) => {
     }
 }
 
+let updateSpecialty = async (req, res) => {
+    try {
+        let response = await doctorService.updateSpecialty(req.body);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from the server'
+        })
+    }
+}
+
 let getAllSpecialty = async (req, res) => {
     try {
         let response = await doctorService.getAllSpecialty();
@@ -237,6 +249,7 @@ module.exports = {
     getSchedules,
     getDoctorInfo,
     createSpecialty,
+    updateSpecialty,
     getAllSpecialty,
     getSpecialtyById,
     getAllDoctorsOfSpecialty,

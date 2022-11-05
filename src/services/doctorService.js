@@ -66,7 +66,7 @@ let getAllDoctors = (limit) => {
 let createMarkDown = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            await db.MarkDown.create({
+            await db.Markdowns.create({
                 contentHTML: data.contentHTML,
                 contentMarkDown: data.contentMarkDown,
                 description: data.description,
@@ -110,7 +110,7 @@ let createDoctorInfo = (data) => {
 let updateMarkDown = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let markdown = await db.MarkDown.findOne({
+            let markdown = await db.Markdowns.findOne({
                 where: { doctorId: data.doctorId },
                 raw: false,
             })
@@ -192,7 +192,7 @@ let getDetailDoctorById = (doctorId) => {
                 },
                 include: [
                     {
-                        model: db.MarkDown,
+                        model: db.Markdowns,
                         attributes: ['description', 'contentHTML', 'contentMarkDown']
                     },
                     {
@@ -306,6 +306,30 @@ let createSpecialty = async (specialty) => {
                 contentHTML: specialty.contentHTML,
                 contentMarkDown: specialty.contentMarkDown,
             })
+            resolve({
+                errCode: 0,
+                errMessage: 'OK'
+            });
+
+        } catch (e) {
+            console.log('catch e: ', e);
+            reject(e);
+        }
+    })
+}
+
+let updateSpecialty = async (specialty) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let updateSpecialty = await db.Specialty.findOne({
+                where: { id: specialty.id },
+                raw: false
+            })
+            updateSpecialty.name = specialty.name;
+            updateSpecialty.image = specialty.image;
+            updateSpecialty.contentHTML = specialty.contentHTML;
+            updateSpecialty.contentMarkDown = specialty.contentMarkDown;
+            updateSpecialty.save();
             resolve({
                 errCode: 0,
                 errMessage: 'OK'
@@ -469,6 +493,7 @@ module.exports = {
     updateDoctorInfo,
     getDoctorInfo,
     createSpecialty,
+    updateSpecialty,
     getAllSpecialty,
     getSpecialtyById,
     getAllDoctorsOfSpecialty,

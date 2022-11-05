@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     image: DataTypes.STRING,
     contentHTML: DataTypes.TEXT('long'),
-    contentMarkDown: DataTypes.TEXT('long')
+    contentMarkDown: DataTypes.TEXT('long'),
   }, {
     sequelize,
     modelName: 'Specialty',

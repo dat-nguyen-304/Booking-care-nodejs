@@ -13,12 +13,11 @@ module.exports = (sequelize, DataTypes) => {
         contentHTML: DataTypes.TEXT('long'),
         contentMarkDown: DataTypes.TEXT('long'),
         description: DataTypes.TEXT('long'),
-        doctorId: DataTypes.INTEGER,
-        specialtyId: DataTypes.INTEGER,
-        clinicId: DataTypes.INTEGER
+        doctorId: DataTypes.INTEGER
     }, {
         sequelize,
-        modelName: 'MarkDown',
+        modelName: 'Markdowns',
+        freezeTableName: true
     });
     return MarkDown;
 };

@@ -15,14 +15,13 @@ module.exports = (sequelize, DataTypes) => {
     };
     Doctor_Info.init({
         doctorId: DataTypes.INTEGER,
+        specialtyId: DataTypes.INTEGER,
         priceId: DataTypes.STRING,
         provinceId: DataTypes.STRING,
         paymentId: DataTypes.STRING,
         nameClinic: DataTypes.STRING,
         addressClinic: DataTypes.STRING,
         note: DataTypes.STRING,
-        count: DataTypes.INTEGER,
-        specialtyId: DataTypes.INTEGER,
     }, {
         sequelize,
         modelName: 'Doctor_Info',
